@@ -12,7 +12,8 @@ ENV container=docker \
     PERSISTENT=/persistent \
     APPLIANCE_ROOT=/opt/manageiq/manageiq-appliance \
     SUI_ROOT=/opt/manageiq/manageiq-ui-service \
-    CONTAINER_SCRIPTS_ROOT=/opt/manageiq/container-scripts
+    CONTAINER_SCRIPTS_ROOT=/opt/manageiq/container-scripts \
+    TERM=xterm
 
 ## Atomic/OpenShift Labels
 LABEL name="manageiq-apache" \
