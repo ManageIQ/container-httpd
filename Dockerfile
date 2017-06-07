@@ -107,7 +107,6 @@ COPY docker-assets/apache-conf/*.conf /etc/httpd/conf.d/
 
 ## Copy OpenShift and appliance-initialize scripts
 COPY docker-assets/entrypoint /usr/bin
-COPY docker-assets/container.data.persist /
 COPY docker-assets/appliance-initialize.sh /bin
 ADD  docker-assets/container-scripts ${CONTAINER_SCRIPTS_ROOT}
 

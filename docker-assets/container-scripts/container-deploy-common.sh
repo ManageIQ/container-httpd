@@ -6,9 +6,6 @@ PV_LOG_DIR="${PERSISTENT}/log"
 # This directory is used to store apache specific configuration on PV
 PV_CONFIG_DIR="${PERSISTENT}/config"
 
-# This file is supplied by the app docker image with default files/dirs to persist on PV
-CONTAINER_DATA_PERSIST_FILE="/container.data.persist"
-
 # Prepare appliance initialization environment
 function prepare_init_env() {
   # Create container deployment dirs into PV if not already present
