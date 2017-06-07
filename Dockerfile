@@ -1,19 +1,11 @@
-FROM manageiq/ruby
+FROM manageiq/manageiq-pods:app-latest
+
 MAINTAINER ManageIQ https://github.com/ManageIQ/manageiq-appliance-build
 
-## For SUI
-ARG REF=master
-
 ## Set ENV, LANG only needed if building with docker-1.8
-ENV container=docker \
-    CONTAINER=true \
-    APACHE_CONF_DIR=/etc/httpd/conf.d \
+ENV APACHE_CONF_DIR=/etc/httpd/conf.d \
     APP_ROOT=/var/www/miq/vmdb \
-    PERSISTENT=/persistent \
-    APPLIANCE_ROOT=/opt/manageiq/manageiq-appliance \
-    SUI_ROOT=/opt/manageiq/manageiq-ui-service \
-    CONTAINER_SCRIPTS_ROOT=/opt/manageiq/container-scripts \
-    TERM=xterm
+    PERSISTENT=/persistent
 
 ## Atomic/OpenShift Labels
 LABEL name="manageiq-apache" \
@@ -33,32 +25,10 @@ STOPSIGNAL SIGRTMIN+3
 ## Install EPEL repo, yum necessary packages for the build without docs, clean all caches
 RUN yum -y install centos-release-scl-rh && \
     yum -y install --setopt=tsflags=nodocs \
-                   git                     \
-                   net-tools               \
-                   nodejs                  \
                    httpd                   \
-                   mod_ssl                 \
-                   mod_auth_kerb           \
-                   mod_authnz_pam          \
-                   mod_intercept_form_submit \
-                   mod_lookup_identity     \
-                   mod_auth_mellon         \
                    initscripts             \
+                   mod_ssl                 \
                    npm                     \
-                   openldap-clients        \
-                   http-parser             \
-                   ipa-client              \
-                   ipa-admintools          \
-                   certmonger              \
-                   sssd                    \
-                   sssd-dbus               \
-                   c-ares                  \
-                   real-md                 \
-                   adcli                   \
-                   oddjob                  \
-                   oddjob-mkhomedir        \
-                   realmd                  \
-                   samba-common            \
                    &&                      \
     yum clean all
 
@@ -72,29 +42,27 @@ RUN (cd /lib/systemd/system/sysinit.target.wants && for i in *; do [ $i == syste
      rm -vf /lib/systemd/system/basic.target.wants/* && \
      rm -vf /lib/systemd/system/anaconda.target.wants/*
 
-## GIT clone manageiq-appliance and service UI repo (SUI)
-RUN mkdir -p ${APPLIANCE_ROOT} && \
-    curl -L https://github.com/ManageIQ/manageiq-appliance/tarball/${REF} | tar vxz -C ${APPLIANCE_ROOT} --strip 1
-RUN mkdir -p ${SUI_ROOT} && \
-    curl -L https://github.com/ManageIQ/manageiq-ui-service/tarball/${REF} | tar vxz -C ${SUI_ROOT} --strip 1
-
-## Setup environment
-RUN ${APPLIANCE_ROOT}/setup && \
-    rm -f /etc/httpd/conf.d/manageiq-balancer-* && \
-    ln -vs ${APP_ROOT} /opt/manageiq/manageiq && \
-    mkdir -p ${APP_ROOT}/log && \
-    mkdir -p ${APP_ROOT}/public && \
-    ln -s /persistent-assets/assets ${APP_ROOT}/public/assets && \
-    mkdir -p ${CONTAINER_SCRIPTS_ROOT} && \
+## Setup apache
+RUN rm -f /etc/httpd/conf.d/manageiq-balancer-* && \
     mv /etc/httpd/conf.d/ssl.conf{,.orig} && \
     echo "# This file intentionally left blank. ManageIQ maintains its own SSL configuration" > /etc/httpd/conf.d/ssl.conf 
 
-## Change workdir to application root, build/install gems
+## Change workdir to application root, build UI components
 WORKDIR ${APP_ROOT}
+RUN source /etc/default/evm && \
+    export RAILS_USE_MEMORY_STORE="true" && \
+    npm install bower yarn -g && \
+    rake update:bower && \
+    bin/rails log:clear tmp:clear && \
+    rake evm:compile_assets && \
+    # Cleanup install artifacts
+    npm cache clean && \
+    bower cache clean && \
+    rm -rvf ${APP_ROOT}/tmp/cache/assets && \
+    rm -vf ${APP_ROOT}/log/*.log
 
-## Build SUI
+# Build SUI
 RUN cd ${SUI_ROOT} && \
-    npm install yarn -g && \
     yarn install --production && \
     yarn run build && \
     yarn cache clean
