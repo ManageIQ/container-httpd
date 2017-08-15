@@ -1,17 +1,16 @@
 FROM centos/httpd:latest
-
 MAINTAINER ManageIQ https://github.com/ManageIQ/manageiq-appliance-build
 
 ## Atomic/OpenShift Labels
-LABEL name="manageiq-apache" \
+LABEL name="application-apache" \
       vendor="ManageIQ" \
       url="http://manageiq.org/" \
-      summary="ManageIQ httpd image" \
-      description="ManageIQ is a management and automation platform for virtual, private, and hybrid cloud infrastructures." \
-      io.k8s.display-name="ManageIQ Apache" \
-      io.k8s.description="ManageIQ Apache is the front-end for the ManageIQ Application." \
+      summary="Application httpd front-end image" \
+      description="An Application httpd front-end image for handling authentication external to the application." \
+      io.k8s.display-name="Application Apache" \
+      io.k8s.description="Application Apache is the application front-end managing external authentication." \
       io.openshift.expose-services="80:http" \
-      io.openshift.tags="ManageIQ-Apache,apache"
+      io.openshift.tags="Application-Apache,apache"
 
 ## To cleanly shutdown systemd, use SIGRTMIN+3
 STOPSIGNAL SIGRTMIN+3
@@ -64,8 +63,6 @@ COPY docker-assets/entrypoint /usr/bin
 EXPOSE 80
 
 WORKDIR /etc/httpd
-
-COPY docker-assets/entrypoint /usr/bin
 
 RUN systemctl enable dbus httpd
 
