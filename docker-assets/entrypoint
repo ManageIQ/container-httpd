@@ -1,5 +1,3 @@
 #!/bin/bash
 
-/usr/bin/generate_server_cert.sh
-
 exec "$@"
