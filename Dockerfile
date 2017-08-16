@@ -2,15 +2,15 @@ FROM centos/httpd:latest
 MAINTAINER ManageIQ https://github.com/ManageIQ/manageiq-appliance-build
 
 ## Atomic/OpenShift Labels
-LABEL name="application-apache" \
+LABEL name="auth-httpd" \
       vendor="ManageIQ" \
       url="http://manageiq.org/" \
-      summary="Application httpd front-end image" \
-      description="An Application httpd front-end image for handling authentication external to the application." \
-      io.k8s.display-name="Application Apache" \
-      io.k8s.description="Application Apache is the application front-end managing external authentication." \
+      summary="httpd image with external authentication" \
+      description="An httpd image which includes packages and configuration necessary for handling external authentication." \
+      io.k8s.display-name="Httpd with Authentication" \
+      io.k8s.description="An httpd image which includes packages and configuration necessary for handling external authentication." \
       io.openshift.expose-services="80:http" \
-      io.openshift.tags="Application-Apache,apache"
+      io.openshift.tags="httpd"
 
 ## To cleanly shutdown systemd, use SIGRTMIN+3
 STOPSIGNAL SIGRTMIN+3
