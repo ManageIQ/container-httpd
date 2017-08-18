@@ -19,7 +19,7 @@ LABEL name="auth-httpd" \
 STOPSIGNAL SIGRTMIN+3
 
 ## Install EPEL repo, yum necessary packages for the build without docs, clean all caches
-RUN yum -y install centos-release-scl-rh && \
+RUN yum -y install centos-release-scl-rh epel-release && \
     # SSSD Packages \
     yum -y install --setopt=tsflags=nodocs sssd                         \
                                            sssd-dbus                    \

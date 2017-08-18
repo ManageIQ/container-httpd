@@ -1,0 +1,7 @@
+[Unit]
+Description=Starts the Httpd Auth API Service
+After=dbus.service
+[Service]
+ExecStart=/usr/bin/auth-api --port=3301
+[Install]
+WantedBy=multi-user.target
