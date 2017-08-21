@@ -1,6 +1,9 @@
 FROM centos/httpd:latest
 MAINTAINER ManageIQ https://github.com/ManageIQ/manageiq-appliance-build
 
+## Systemd
+ENV container oci
+
 ## Atomic/OpenShift Labels
 LABEL name="auth-httpd" \
       vendor="ManageIQ" \
@@ -58,15 +61,12 @@ RUN (cd /lib/systemd/system/sysinit.target.wants && for i in *; do [ $i == syste
 ## Remove any existing configurations
 RUN rm -f /etc/httpd/conf.d/*
 
-COPY docker-assets/entrypoint /usr/bin
-
 EXPOSE 80
 
 WORKDIR /etc/httpd
 
-RUN systemctl enable dbus httpd
+RUN systemctl enable httpd
 
-VOLUME [ "/sys/fs/cgroup" ]
+VOLUME /tmp /run /var/log/httpd
 
-ENTRYPOINT [ "entrypoint" ]
 CMD [ "/usr/sbin/init" ]
