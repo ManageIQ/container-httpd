@@ -67,6 +67,6 @@ WORKDIR /etc/httpd
 
 RUN systemctl enable httpd
 
-VOLUME /tmp /run /var/log/httpd
+VOLUME /sys/fs/cgroup
 
 CMD [ "/usr/sbin/init" ]
