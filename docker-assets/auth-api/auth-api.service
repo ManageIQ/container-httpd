@@ -2,6 +2,7 @@
 Description=Starts the Httpd Auth API Service
 After=dbus.service
 [Service]
-ExecStart=/usr/bin/auth-api --port=3301
+EnvironmentFile=/etc/container-environment
+ExecStart=/usr/bin/auth-api --port=${HTTPD_AUTH_API_SERVICE_PORT}
 [Install]
 WantedBy=multi-user.target
