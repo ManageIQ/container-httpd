@@ -1,5 +1,9 @@
 #!/bin/bash
 
-/usr/bin/initialize-httpd-auth.sh
+# /usr/bin/entrypoint is now run by lifecycle postStart.
 
-exec "$@"
+# the environment will include PATH and such, and for
+# for systemd services in container-httpd we use and only
+# want the HTTPD_ ones defined.
+#
+env | grep "^HTTPD_" | sort > /etc/container-environment

@@ -8,14 +8,6 @@ function trim_whitespace {
   sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//'
 }
 
-function auth_type {
-  if [ -f ${AUTH_CONFIG_FILE} ]
-  then
-    CONFIG_AUTH_TYPE=$(grep '^type[[:space:]]*=.*$' ${AUTH_CONFIG_FILE} | cut -f2 -d= | trim_whitespace)
-  fi
-  echo ${CONFIG_AUTH_TYPE:-internal}
-}
-
 function auth_files {
   if [ -f ${AUTH_CONFIG_FILE} ]
   then
@@ -23,7 +15,7 @@ function auth_files {
   fi
 }
 
-AUTH_TYPE=$(auth_type)
+AUTH_TYPE=${HTTPD_AUTH_TYPE:-internal}
 echo "Authentication Type: ${AUTH_TYPE}"
 
 if [ "${AUTH_TYPE}" == "internal" ]

@@ -1,6 +1,7 @@
 FROM centos/httpd:latest
 MAINTAINER ManageIQ https://github.com/ManageIQ/manageiq-appliance-build
 
+## Systemd
 ENV container oci
 
 ## Atomic/OpenShift Labels
@@ -67,6 +68,10 @@ COPY docker-assets/entrypoint               /usr/bin
 COPY docker-assets/initialize-httpd-auth.sh /usr/bin
 
 COPY docker-assets/initialize-httpd-auth.service /usr/lib/systemd/system/initialize-httpd-auth.service
+
+## Make sure httpd has the environment variables needed for external auth
+RUN  mkdir -p /etc/systemd/system/httpd.service.d
+COPY docker-assets/httpd-environment.conf /etc/systemd/system/httpd.service.d/environment.conf
 
 EXPOSE 80
 
