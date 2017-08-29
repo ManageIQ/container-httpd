@@ -19,7 +19,7 @@ LABEL name="auth-httpd" \
 STOPSIGNAL SIGRTMIN+3
 
 ## Install EPEL repo, yum necessary packages for the build without docs, clean all caches
-RUN yum -y install centos-release-scl-rh epel-release && \
+RUN yum -y install centos-release-scl-rh && \
     # SSSD Packages \
     yum -y install --setopt=tsflags=nodocs sssd                         \
                                            sssd-dbus                    \
@@ -77,11 +77,26 @@ COPY docker-assets/sssd-startup.conf /etc/systemd/system/sssd.service.d/startup.
 RUN  mkdir -p /etc/systemd/system/httpd.service.d
 COPY docker-assets/httpd-environment.conf /etc/systemd/system/httpd.service.d/environment.conf
 
+# Ruby 2.3
+ENV TERM=xterm \
+    LANG=en_US.UTF-8
+RUN yum -y install --setopt=tsflags=nodocs rh-ruby23
+
+## Build Auth-Api
+RUN mkdir /opt/rh/auth-api
+COPY docker-assets/auth-api /opt/rh/auth-api
+RUN  cd /opt/rh/auth-api             && \
+     source /opt/rh/rh-ruby23/enable && \
+     gem install bundler             && \
+     bundle install
+COPY docker-assets/auth-api.service /usr/lib/systemd/system/auth-api.service
+
+
 EXPOSE 80
 
 WORKDIR /etc/httpd
 
-RUN systemctl enable initialize-httpd-auth sssd httpd
+RUN systemctl enable initialize-httpd-auth sssd httpd auth-api
 
 VOLUME /sys/fs/cgroup
 
