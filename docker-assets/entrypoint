@@ -1,9 +1,0 @@
-#!/bin/bash
-
-# /usr/bin/entrypoint is now run by lifecycle postStart.
-
-# the environment will include PATH and such, and for
-# for systemd services in container-httpd we use and only
-# want the HTTPD_ ones defined.
-#
-env | grep "^HTTPD_" | sort > /etc/container-environment

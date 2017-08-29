@@ -64,8 +64,8 @@ RUN rm -f /etc/httpd/conf.d/*
 ## Create the mount point for the authentication configuration files
 RUN mkdir /etc/httpd/auth-conf.d
 
-COPY docker-assets/entrypoint               /usr/bin
-COPY docker-assets/initialize-httpd-auth.sh /usr/bin
+COPY docker-assets/save-container-environment /usr/bin
+COPY docker-assets/initialize-httpd-auth.sh   /usr/bin
 
 COPY docker-assets/initialize-httpd-auth.service /usr/lib/systemd/system/initialize-httpd-auth.service
 
