@@ -61,11 +61,23 @@ RUN (cd /lib/systemd/system/sysinit.target.wants && for i in *; do [ $i == syste
 ## Remove any existing configurations
 RUN rm -f /etc/httpd/conf.d/*
 
+## Create the mount point for the authentication configuration files
+RUN mkdir /etc/httpd/auth-conf.d
+
+COPY docker-assets/save-container-environment /usr/bin
+COPY docker-assets/initialize-httpd-auth.sh   /usr/bin
+
+COPY docker-assets/initialize-httpd-auth.service /usr/lib/systemd/system/initialize-httpd-auth.service
+
+## Make sure httpd has the environment variables needed for external auth
+RUN  mkdir -p /etc/systemd/system/httpd.service.d
+COPY docker-assets/httpd-environment.conf /etc/systemd/system/httpd.service.d/environment.conf
+
 EXPOSE 80
 
 WORKDIR /etc/httpd
 
-RUN systemctl enable httpd
+RUN systemctl enable initialize-httpd-auth httpd
 
 VOLUME /sys/fs/cgroup
 
