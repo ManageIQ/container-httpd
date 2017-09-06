@@ -2,9 +2,9 @@
 Description=Initializes Httpd External Authentication
 Before=network-pre.target
 Wants=network-pre.target
+ConditionPathExists=/etc/container-environment
 [Service]
 Type=oneshot
-ConditionPathExists=/etc/container-environment
 EnvironmentFile=/etc/container-environment
 ExecStart=/usr/bin/initialize-httpd-auth.sh
 [Install]
