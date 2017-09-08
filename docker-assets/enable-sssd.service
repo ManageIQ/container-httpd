@@ -1,8 +1,0 @@
-[Unit]
-Description=Enables and Starts the SSSD Service
-After=initialize-httpd-auth.service httpd.service
-[Service]
-Type=oneshot
-ExecStart=/usr/bin/enable-sssd.sh
-[Install]
-WantedBy=multi-user.target
