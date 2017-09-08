@@ -2,7 +2,6 @@
 
 HTTPD_AUTH_CONFIG_DIR=/etc/httpd/auth-conf.d
 AUTH_CONFIG_FILE="${HTTPD_AUTH_CONFIG_DIR}/auth-configuration.conf"
-SSSD_CONF_FILE="/etc/sssd/sssd.conf"
 
 function trim_whitespace {
   sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//'
@@ -28,10 +27,9 @@ echo "Initializing $AUTH_TYPE External Authentication"
 
 echo "Copying Authentication Files:"
 auth_files | \
-( SSSD_CONF="no"
+(
   while read source_file target_file file_permission
   do
-    [[ ${target_file} == ${SSSD_CONF_FILE} ]] && SSSD_CONF="yes"
     BINARY=""; [[ ${source_file} =~ \.base64$ ]] && BINARY="BINARY"
     printf "Copying: %s => %s (%s) %s\n" ${source_file} ${target_file} ${file_permission:-unspecified} $BINARY
     TARGET_DIR="`dirname ${target_file}`"
@@ -52,13 +50,6 @@ auth_files | \
     [[ -n "${PERMS[1]}" ]] && /usr/bin/chgrp ${PERMS[1]} ${target_file}
     [[ -n "${PERMS[2]}" ]] && /usr/bin/chown ${PERMS[2]} ${target_file}
   done
-
-  echo ""
-  if [ $SSSD_CONF == "yes" ]
-  then
-    echo "SSSD File ${SSSD_CONF_FILE} copied, Enabling SSSD ..."
-    systemctl enable sssd
-  fi
 )
 echo "Finished copying Authentication Files."
 

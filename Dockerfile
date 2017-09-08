@@ -69,6 +69,10 @@ COPY docker-assets/initialize-httpd-auth.sh   /usr/bin
 
 COPY docker-assets/initialize-httpd-auth.service /usr/lib/systemd/system/initialize-httpd-auth.service
 
+## Make sure sssd has the right startup conditions
+RUN  mkdir -p /etc/systemd/system/sssd.service.d
+COPY docker-assets/sssd-startup.conf /etc/systemd/system/sssd.service.d/startup.conf
+
 ## Make sure httpd has the environment variables needed for external auth
 RUN  mkdir -p /etc/systemd/system/httpd.service.d
 COPY docker-assets/httpd-environment.conf /etc/systemd/system/httpd.service.d/environment.conf
@@ -77,7 +81,7 @@ EXPOSE 80
 
 WORKDIR /etc/httpd
 
-RUN systemctl enable initialize-httpd-auth httpd
+RUN systemctl enable initialize-httpd-auth sssd httpd
 
 VOLUME /sys/fs/cgroup
 
