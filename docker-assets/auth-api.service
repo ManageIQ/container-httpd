@@ -1,9 +1,9 @@
 [Unit]
 Description=Starts the Httpd Auth API Service
 After=dbus.service
-[Service]
 ConditionPathExists=/etc/container-environment
+[Service]
 EnvironmentFile=/etc/container-environment
-ExecStart=/usr/bin/scl enable rh-ruby23 'cd /opt/rh/auth-api; bundle exec ruby ./auth_api_service.rb'
+ExecStart=/usr/bin/auth-api-service.sh
 [Install]
 WantedBy=multi-user.target
