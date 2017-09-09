@@ -61,22 +61,6 @@ RUN (cd /lib/systemd/system/sysinit.target.wants && for i in *; do [ $i == syste
 ## Remove any existing configurations
 RUN rm -f /etc/httpd/conf.d/*
 
-## Create the mount point for the authentication configuration files
-RUN mkdir /etc/httpd/auth-conf.d
-
-COPY docker-assets/save-container-environment /usr/bin
-COPY docker-assets/initialize-httpd-auth.sh   /usr/bin
-
-COPY docker-assets/initialize-httpd-auth.service /usr/lib/systemd/system/initialize-httpd-auth.service
-
-## Make sure sssd has the right startup conditions
-RUN  mkdir -p /etc/systemd/system/sssd.service.d
-COPY docker-assets/sssd-startup.conf /etc/systemd/system/sssd.service.d/startup.conf
-
-## Make sure httpd has the environment variables needed for external auth
-RUN  mkdir -p /etc/systemd/system/httpd.service.d
-COPY docker-assets/httpd-environment.conf /etc/systemd/system/httpd.service.d/environment.conf
-
 ## For Ruby
 ENV TERM=xterm \
     LANG=en_US.UTF-8 \
@@ -102,6 +86,22 @@ RUN  cd /opt/rh/auth-api && \
      bundle install
 COPY docker-assets/auth-api-service.sh /usr/bin/auth-api-service.sh
 COPY docker-assets/auth-api.service    /usr/lib/systemd/system/auth-api.service
+
+## Create the mount point for the authentication configuration files
+RUN mkdir /etc/httpd/auth-conf.d
+
+COPY docker-assets/save-container-environment /usr/bin
+COPY docker-assets/initialize-httpd-auth.sh   /usr/bin
+
+COPY docker-assets/initialize-httpd-auth.service /usr/lib/systemd/system/initialize-httpd-auth.service
+
+## Make sure sssd has the right startup conditions
+RUN  mkdir -p /etc/systemd/system/sssd.service.d
+COPY docker-assets/sssd-startup.conf /etc/systemd/system/sssd.service.d/startup.conf
+
+## Make sure httpd has the environment variables needed for external auth
+RUN  mkdir -p /etc/systemd/system/httpd.service.d
+COPY docker-assets/httpd-environment.conf /etc/systemd/system/httpd.service.d/environment.conf
 
 EXPOSE 80
 
