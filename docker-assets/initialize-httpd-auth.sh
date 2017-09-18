@@ -47,8 +47,8 @@ auth_files | \
     fi
     PERMS=(`echo $file_permission | awk -F: '{print $1, $2, $3}'`)
     [[ -n "${PERMS[0]}" ]] && /usr/bin/chmod ${PERMS[0]} ${target_file}
-    [[ -n "${PERMS[1]}" ]] && /usr/bin/chgrp ${PERMS[1]} ${target_file}
-    [[ -n "${PERMS[2]}" ]] && /usr/bin/chown ${PERMS[2]} ${target_file}
+    [[ -n "${PERMS[1]}" ]] && /usr/bin/chown ${PERMS[1]} ${target_file}
+    [[ -n "${PERMS[2]}" ]] && /usr/bin/chgrp ${PERMS[2]} ${target_file}
   done
 )
 echo "Finished copying Authentication Files."
