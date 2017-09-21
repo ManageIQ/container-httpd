@@ -4,6 +4,6 @@ After=dbus.service
 ConditionPathExists=/etc/container-environment
 [Service]
 EnvironmentFile=/etc/container-environment
-ExecStart=/usr/bin/auth-api-service.sh
+ExecStart=/bin/bash -c "cd ${HTTPD_AUTH_API_SERVICE_DIRECTORY} && bundle exec ruby ./auth_api_service.rb"
 [Install]
 WantedBy=multi-user.target

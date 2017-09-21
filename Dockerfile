@@ -79,12 +79,12 @@ RUN yum -y install --setopt=tsflags=nodocs ruby-install make
 RUN ruby-install ruby 2.3.1 -- --disable-install-doc && rm -rf /usr/local/src/* && yum clean all
 
 ## Build Auth-Api
-RUN mkdir -p /opt/rh/auth-api
-COPY docker-assets/auth-api /opt/rh/auth-api
-RUN  cd /opt/rh/auth-api && \
+ENV HTTPD_AUTH_API_SERVICE_DIRECTORY=/opt/auth-api
+RUN mkdir -p ${HTTPD_AUTH_API_SERVICE_DIRECTORY}
+COPY docker-assets/auth-api ${HTTPD_AUTH_API_SERVICE_DIRECTORY}
+RUN  cd ${HTTPD_AUTH_API_SERVICE_DIRECTORY} && \
      gem install bundler && \
      bundle install
-COPY docker-assets/auth-api-service.sh /usr/bin/auth-api-service.sh
 COPY docker-assets/auth-api.service    /usr/lib/systemd/system/auth-api.service
 
 ## Create the mount point for the authentication configuration files

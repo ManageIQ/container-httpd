@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# This is executed by the lifecycle postStart so the environment
-# will include PATH and such. systemd services in container-httpd
-# only use the HTTPD_ ones defined.
+# This is executed by the lifecycle postStart so the environment.
 #
-env | grep "^HTTPD_" | sort > /etc/container-environment
+# systemd services in container-httpd require the HTTPD_ and PATH variables.
+#
+env | egrep "^HTTPD_|^PATH=" | sort > /etc/container-environment

@@ -1,4 +1,4 @@
 source "https://rubygems.org"
 
 gem "ruby-dbus"
-gem "sinatra"
+gem "sinatra", "~>2.0.0"
