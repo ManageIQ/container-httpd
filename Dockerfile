@@ -77,6 +77,10 @@ COPY docker-assets/sssd-startup.conf /etc/systemd/system/sssd.service.d/startup.
 RUN  mkdir -p /etc/systemd/system/httpd.service.d
 COPY docker-assets/httpd-environment.conf /etc/systemd/system/httpd.service.d/environment.conf
 
+## Copy the pages that must be served by this httpd and cannot be proxied.
+RUN mkdir -p /var/www/html/proxy_pages
+COPY docker-assets/invalid_sso_credentials.js /var/www/html/proxy_pages/
+
 EXPOSE 80
 
 WORKDIR /etc/httpd
