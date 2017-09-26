@@ -61,6 +61,32 @@ RUN (cd /lib/systemd/system/sysinit.target.wants && for i in *; do [ $i == syste
 ## Remove any existing configurations
 RUN rm -f /etc/httpd/conf.d/*
 
+## For Ruby
+ENV TERM=xterm \
+    LANG=en_US.UTF-8 \
+    RUBY_GEMS_ROOT=/opt/rubies/ruby-2.3.1/lib/ruby/gems/2.3.0 \
+    PATH=$PATH:/opt/rubies/ruby-2.3.1/bin
+
+# Install repos
+RUN yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm && \
+    curl -sL https://copr.fedorainfracloud.org/coprs/postmodern/ruby-install/repo/fedora-25/postmodern-ruby-install-fedora-25.repo -o /etc/yum.repos.d/ruby-install.repo && \
+    sed -i 's/\$releasever/25/g' /etc/yum.repos.d/ruby-install.repo
+
+# Install ruby-install and make
+RUN yum -y install --setopt=tsflags=nodocs ruby-install make
+
+# Install Ruby 2.3.1
+RUN ruby-install ruby 2.3.1 -- --disable-install-doc && rm -rf /usr/local/src/* && yum clean all
+
+## Build Auth-Api
+ENV HTTPD_AUTH_API_SERVICE_DIRECTORY=/opt/auth-api
+RUN mkdir -p ${HTTPD_AUTH_API_SERVICE_DIRECTORY}
+COPY docker-assets/auth-api ${HTTPD_AUTH_API_SERVICE_DIRECTORY}
+RUN  cd ${HTTPD_AUTH_API_SERVICE_DIRECTORY} && \
+     gem install bundler && \
+     bundle install
+COPY docker-assets/auth-api.service    /usr/lib/systemd/system/auth-api.service
+
 ## Create the mount point for the authentication configuration files
 RUN mkdir /etc/httpd/auth-conf.d
 
@@ -85,7 +111,7 @@ EXPOSE 80
 
 WORKDIR /etc/httpd
 
-RUN systemctl enable initialize-httpd-auth sssd httpd
+RUN systemctl enable initialize-httpd-auth sssd httpd auth-api
 
 VOLUME /sys/fs/cgroup
 
