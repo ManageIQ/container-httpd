@@ -12,7 +12,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 - Added support for the auth-api service in the httpd pod. [(#15)](https://github.com/ManageIQ/container-httpd/pull/15)
 
 ### Fixed
-- initialize-httpd-auth.service was no longer honoring ext-auth environment. [(#25)](https://github.com/ManageIQ/container-httpd/pull/25)- httpd service waits for /etc/container-env file to be created [(#20)](https://github.com/ManageIQ/container-httpd/pull/20)
+- initialize-httpd-auth.service was no longer honoring ext-auth environment. [(#25)](https://github.com/ManageIQ/container-httpd/pull/25)
+- httpd service waits for /etc/container-env file to be created [(#20)](https://github.com/ManageIQ/container-httpd/pull/20)
 
 ## Unreleased as of Sprint 69 ending 2017-09-18
 
