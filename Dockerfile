@@ -1,6 +1,9 @@
 FROM centos/httpd:latest
 MAINTAINER ManageIQ https://github.com/ManageIQ/manageiq-appliance-build
 
+## Set build ARGs
+ARG DBUS_API_REF=master
+
 ## Systemd
 ENV container oci
 
@@ -79,10 +82,10 @@ RUN yum -y install --setopt=tsflags=nodocs ruby-install make
 RUN ruby-install ruby 2.3.1 -- --disable-install-doc && rm -rf /usr/local/src/* && yum clean all
 
 ## Install DBus API Service
-ENV HTTPD_DBUS_API_SERVICE_DIRECTORY=/opt/dbus-api-service
+ENV HTTPD_DBUS_API_SERVICE_DIRECTORY=/opt/dbus_api_service
 RUN mkdir -p ${HTTPD_DBUS_API_SERVICE_DIRECTORY}
 RUN cd ${HTTPD_DBUS_API_SERVICE_DIRECTORY} && \
-    curl -L https://github.com/ManageIQ/dbus_api_service/tarball/master | tar vxz -C ${HTTPD_DBUS_API_SERVICE_DIRECTORY} --strip 1 && \
+    curl -L https://github.com/ManageIQ/dbus_api_service/tarball/${DBUS_API_REF} | tar vxz -C ${HTTPD_DBUS_API_SERVICE_DIRECTORY} --strip 1 && \
     gem install bundler && \
     bundle install
 COPY docker-assets/dbus-api.service    /usr/lib/systemd/system/dbus-api.service
