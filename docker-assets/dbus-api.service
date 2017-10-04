@@ -1,9 +1,9 @@
 [Unit]
-Description=Starts the Httpd Auth API Service
+Description=Starts the Httpd DBus API Service
 After=dbus.service
 ConditionPathExists=/etc/container-environment
 [Service]
 EnvironmentFile=/etc/container-environment
-ExecStart=/bin/bash -c "cd ${HTTPD_AUTH_API_SERVICE_DIRECTORY} && bundle exec ruby ./auth_api_service.rb"
+ExecStart=/bin/bash -c "cd ${HTTPD_DBUS_API_SERVICE_DIRECTORY} && bin/dbus_api_service"
 [Install]
 WantedBy=multi-user.target
