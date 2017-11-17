@@ -43,7 +43,6 @@ RUN yum -y install centos-release-scl-rh && \
     # Active Directory External Authentication Packages \
     yum -y install --setopt=tsflags=nodocs adcli                        \
                                            realmd                       \
-                                           real-md                      \
                                            oddjob                       \
                                            oddjob-mkhomedir             \
                                            samba-common                 \
