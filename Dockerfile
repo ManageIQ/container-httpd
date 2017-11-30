@@ -35,6 +35,7 @@ RUN yum -y install centos-release-scl-rh && \
                                            mod_intercept_form_submit    \
                                            mod_lookup_identity          \
                                            mod_auth_mellon              \
+                                           mod_auth_openidc             \
                                            && \
     # IPA External Authentication Packages \
     yum -y install --setopt=tsflags=nodocs c-ares                       \
