@@ -87,27 +87,27 @@ RUN cd ${HTTPD_DBUS_API_SERVICE_DIRECTORY} && \
     curl -L https://github.com/ManageIQ/dbus_api_service/tarball/${DBUS_API_REF} | tar vxz -C ${HTTPD_DBUS_API_SERVICE_DIRECTORY} --strip 1 && \
     gem install bundler && \
     bundle install
-COPY docker-assets/dbus-api.service    /usr/lib/systemd/system/dbus-api.service
+COPY container-assets/dbus-api.service    /usr/lib/systemd/system/dbus-api.service
 
 ## Create the mount point for the authentication configuration files
 RUN mkdir /etc/httpd/auth-conf.d
 
-COPY docker-assets/save-container-environment /usr/bin
-COPY docker-assets/initialize-httpd-auth.sh   /usr/bin
+COPY container-assets/save-container-environment /usr/bin
+COPY container-assets/initialize-httpd-auth.sh   /usr/bin
 
-COPY docker-assets/initialize-httpd-auth.service /usr/lib/systemd/system/initialize-httpd-auth.service
+COPY container-assets/initialize-httpd-auth.service /usr/lib/systemd/system/initialize-httpd-auth.service
 
 ## Make sure sssd has the right startup conditions
 RUN  mkdir -p /etc/systemd/system/sssd.service.d
-COPY docker-assets/sssd-startup.conf /etc/systemd/system/sssd.service.d/startup.conf
+COPY container-assets/sssd-startup.conf /etc/systemd/system/sssd.service.d/startup.conf
 
 ## Make sure httpd has the environment variables needed for external auth
 RUN  mkdir -p /etc/systemd/system/httpd.service.d
-COPY docker-assets/httpd-environment.conf /etc/systemd/system/httpd.service.d/environment.conf
+COPY container-assets/httpd-environment.conf /etc/systemd/system/httpd.service.d/environment.conf
 
 ## Copy the pages that must be served by this httpd and cannot be proxied.
 RUN mkdir -p /var/www/html/proxy_pages
-COPY docker-assets/invalid_sso_credentials.js /var/www/html/proxy_pages/
+COPY container-assets/invalid_sso_credentials.js /var/www/html/proxy_pages/
 
 EXPOSE 80
 

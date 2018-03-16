@@ -1,2 +1,2 @@
 # container-httpd
-Docker container for a CentOS 7 httpd server
+Container for a CentOS 7 httpd server
