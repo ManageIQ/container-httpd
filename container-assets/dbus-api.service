@@ -2,7 +2,7 @@
 Description=Starts the Httpd DBus API Service
 After=httpd.service
 [Service]
-EnvironmentFile=/etc/container-environment
+EnvironmentFile=-/etc/container-environment
 ExecStartPre=/bin/bash -c "until [ -s /etc/container-environment ]; do sleep 1; done"
 ExecStart=/bin/bash -c "cd ${HTTPD_DBUS_API_SERVICE_DIRECTORY} && bin/dbus_api_service"
 [Install]
