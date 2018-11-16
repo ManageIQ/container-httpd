@@ -31,6 +31,7 @@ RUN yum -y install centos-release-scl-rh && \
                                            && \
     # Apache External Authentication Module Packages \
     yum -y install --setopt=tsflags=nodocs mod_auth_kerb                \
+                                           mod_auth_gssapi              \
                                            mod_authnz_pam               \
                                            mod_intercept_form_submit    \
                                            mod_lookup_identity          \
