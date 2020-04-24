@@ -46,6 +46,7 @@ RUN dnf -y --disableplugin=subscription-manager module enable ruby:2.5 && \
 
 ## Install DBus API Service
 ENV HTTPD_DBUS_API_SERVICE_DIRECTORY=/opt/dbus_api_service
+ENV HTTPD_DBUS_API_SERVICE_PORT=8081
 RUN mkdir -p ${HTTPD_DBUS_API_SERVICE_DIRECTORY}
 RUN cd ${HTTPD_DBUS_API_SERVICE_DIRECTORY} && \
     curl -L https://github.com/ManageIQ/dbus_api_service/tarball/${DBUS_API_REF} | tar vxz -C ${HTTPD_DBUS_API_SERVICE_DIRECTORY} --strip 1 && \
@@ -73,7 +74,8 @@ COPY container-assets/httpd-environment.conf /etc/systemd/system/httpd.service.d
 RUN mkdir -p /var/www/html/proxy_pages
 COPY container-assets/invalid_sso_credentials.js /var/www/html/proxy_pages/
 
-EXPOSE 80
+EXPOSE 8080
+EXPOSE 8081
 
 WORKDIR /etc/httpd
 
