@@ -1,7 +1,0 @@
-#!/bin/bash
-
-# This is executed by the lifecycle postStart so the environment.
-#
-# systemd services in container-httpd require the HTTPD_ and PATH variables.
-#
-env | egrep "^APPLICATION_DOMAIN=|^HTTPD_|^PATH=" | sort > /etc/container-environment
