@@ -3,7 +3,7 @@ RUN dnf -y --disableplugin=subscription-manager install \
       http://mirror.centos.org/centos/8/BaseOS/x86_64/os/Packages/centos-repos-8.1-1.1911.0.8.el8.x86_64.rpm \
       http://mirror.centos.org/centos/8/BaseOS/x86_64/os/Packages/centos-gpg-keys-8.1-1.1911.0.8.el8.noarch.rpm && \
     dnf -y --disableplugin=subscription-manager module enable mod_auth_openidc && \
-    dnf --disableplugin=subscription-manager -y install httpd mod_auth_openidc && \
+    dnf --disableplugin=subscription-manager -y install httpd mod_auth_openidc procps-ng && \
     dnf --disableplugin=subscription-manager clean all
 
 # Fix permissions so that httpd can run in the restricted scc
