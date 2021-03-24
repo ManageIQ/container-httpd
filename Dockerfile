@@ -24,4 +24,4 @@ RUN rm -f /etc/httpd/conf.d/* && \
 
 EXPOSE 8080
 
-CMD ["/usr/sbin/httpd", "-D", "FOREGROUND"]
+CMD ["/usr/sbin/httpd", "-D", "FOREGROUND", "-E", "/dev/stderr"]
