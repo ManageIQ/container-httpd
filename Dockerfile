@@ -20,8 +20,10 @@ RUN chgrp root /var/run/httpd && chmod g+rwx /var/run/httpd  && \
 
 # Remove any existing configs in conf.d and don't try to bind to port 80
 RUN rm -f /etc/httpd/conf.d/* && \
-    sed -i '/^Listen 80/d' /etc/httpd/conf/httpd.conf
+    sed -i '/^Listen 80/d' /etc/httpd/conf/httpd.conf && \
+    sed -i 's+ErrorLog "logs/error_log"+ErrorLog "/dev/stderr"+g' /etc/httpd/conf/httpd.conf && \
+    sed -i 's+CustomLog "logs/access_log" combined+CustomLog "/dev/stdout" combined+g' /etc/httpd/conf/httpd.conf
 
 EXPOSE 8080
 
-CMD ["/usr/sbin/httpd", "-D", "FOREGROUND"]
+CMD ["/usr/sbin/httpd", "-D", "FOREGROUND", "-E", "/dev/stderr"]
