@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi8/ubi:8.3 AS manifest
+FROM registry.access.redhat.com/ubi8/ubi-minimal:latest AS manifest
 
 COPY .git /tmp/.git
 
