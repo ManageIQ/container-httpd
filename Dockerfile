@@ -3,8 +3,8 @@ FROM registry.access.redhat.com/ubi8/ubi:8.3 AS manifest
 COPY .git /tmp/.git
 
 RUN cd /tmp && \
-    head=$(cat .git/HEAD |cut -d " " -f 2) && \
-    sha=$(cat .git/$head) && \
+    sha=$(cat .git/HEAD | cut -d " " -f 2) && \
+    if [[ "$(cat .git/HEAD)" == "ref:"* ]]; then sha=$(cat .git/$sha); fi && \
     echo "$(date +"%Y%m%d%H%M%S")-$sha" > /tmp/BUILD
 
 FROM registry.access.redhat.com/ubi8/ubi:8.3
