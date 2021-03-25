@@ -1,3 +1,12 @@
+FROM registry.access.redhat.com/ubi8/ubi:8.3 AS manifest
+
+COPY .git /tmp/.git
+
+RUN cd /tmp && \
+    head=$(cat .git/HEAD |cut -d " " -f 2) && \
+    sha=$(cat .git/$head) && \
+    echo "$(date +"%Y%m%d%H%M%S")-$sha" > /tmp/BUILD
+
 FROM registry.access.redhat.com/ubi8/ubi:8.3
 
 ARG ARCH=x86_64
@@ -23,6 +32,9 @@ RUN rm -f /etc/httpd/conf.d/* && \
     sed -i '/^Listen 80/d' /etc/httpd/conf/httpd.conf && \
     sed -i 's+ErrorLog "logs/error_log"+ErrorLog "/dev/stderr"+g' /etc/httpd/conf/httpd.conf && \
     sed -i 's+CustomLog "logs/access_log" combined+CustomLog "/dev/stdout" combined+g' /etc/httpd/conf/httpd.conf
+
+RUN mkdir -p /opt/manageiq/manifest
+COPY --from=manifest /tmp/BUILD /opt/manageiq/manifest
 
 EXPOSE 8080
 
