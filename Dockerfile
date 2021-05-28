@@ -7,7 +7,7 @@ RUN cd /tmp && \
     if [[ "$(cat .git/HEAD)" == "ref:"* ]]; then sha=$(cat .git/$sha); fi && \
     echo "$(date +"%Y%m%d%H%M%S")-$sha" > /tmp/BUILD
 
-FROM registry.access.redhat.com/ubi8/ubi:8.3
+FROM registry.access.redhat.com/ubi8/ubi:8.4
 
 ARG ARCH=x86_64
 
