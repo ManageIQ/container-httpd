@@ -17,8 +17,8 @@ LABEL name="Httpd" \
       description="Apache HTTP Server"
 
 RUN dnf -y --disableplugin=subscription-manager install \
-      http://mirror.centos.org/centos/8.3.2011/BaseOS/${ARCH}/os/Packages/centos-linux-repos-8-2.el8.noarch.rpm \
-      http://mirror.centos.org/centos/8.3.2011/BaseOS/${ARCH}/os/Packages/centos-gpg-keys-8-2.el8.noarch.rpm && \
+      http://mirror.centos.org/centos/8-stream/BaseOS/${ARCH}/os/Packages/centos-stream-repos-8-2.el8.noarch.rpm \
+      http://mirror.centos.org/centos/8-stream/BaseOS/${ARCH}/os/Packages/centos-gpg-keys-8-2.el8.noarch.rpm && \
     dnf -y --disableplugin=subscription-manager module enable mod_auth_openidc && \
     dnf --disableplugin=subscription-manager -y install httpd mod_auth_openidc procps-ng && \
     dnf --disableplugin=subscription-manager clean all
