@@ -16,12 +16,16 @@ LABEL name="Httpd" \
       vendor="ManageIQ" \
       description="Apache HTTP Server"
 
-RUN dnf -y --disableplugin=subscription-manager install \
+RUN dnf -y --disableplugin=subscription-manager --setopt=tsflags=nodocs install \
       http://mirror.centos.org/centos/8-stream/BaseOS/${ARCH}/os/Packages/centos-stream-repos-8-2.el8.noarch.rpm \
       http://mirror.centos.org/centos/8-stream/BaseOS/${ARCH}/os/Packages/centos-gpg-keys-8-2.el8.noarch.rpm && \
     dnf -y --disableplugin=subscription-manager module enable mod_auth_openidc && \
-    dnf --disableplugin=subscription-manager -y install httpd mod_auth_openidc procps-ng && \
-    dnf --disableplugin=subscription-manager clean all
+    dnf -y --disableplugin=subscription-manager --setopt=tsflags=nodocs install \
+      httpd \
+      mod_auth_openidc \
+      procps-ng && \
+    dnf clean all && \
+    rm -rf /var/cache/dnf
 
 # Fix permissions so that httpd can run in the restricted scc
 RUN chgrp root /var/run/httpd && chmod g+rwx /var/run/httpd  && \
