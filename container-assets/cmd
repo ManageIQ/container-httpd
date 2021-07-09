@@ -1,0 +1,3 @@
+#!/bin/bash
+update-ca-trust
+exec /usr/sbin/httpd -D FOREGROUND -E /dev/stderr

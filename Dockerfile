@@ -23,9 +23,12 @@ RUN dnf -y --disableplugin=subscription-manager --setopt=tsflags=nodocs install 
     dnf -y --disableplugin=subscription-manager --setopt=tsflags=nodocs install \
       httpd \
       mod_auth_openidc \
+      mod_ssl \
       procps-ng && \
     dnf clean all && \
-    rm -rf /var/cache/dnf
+    rm -rf /var/cache/dnf && \
+    chmod -R g+w /etc/pki/ca-trust && \
+    chmod -R g+w /usr/share/pki/ca-trust-legacy
 
 # Fix permissions so that httpd can run in the restricted scc
 RUN chgrp root /var/run/httpd && chmod g+rwx /var/run/httpd  && \
@@ -37,9 +40,11 @@ RUN rm -f /etc/httpd/conf.d/* && \
     sed -i 's+ErrorLog "logs/error_log"+ErrorLog "/dev/stderr"+g' /etc/httpd/conf/httpd.conf && \
     sed -i 's+CustomLog "logs/access_log" combined+CustomLog "/dev/stdout" combined+g' /etc/httpd/conf/httpd.conf
 
+COPY container-assets/cmd /cmd
+
 RUN mkdir -p /opt/manageiq/manifest
 COPY --from=manifest /tmp/BUILD /opt/manageiq/manifest
 
 EXPOSE 8080
 
-CMD ["/usr/sbin/httpd", "-D", "FOREGROUND", "-E", "/dev/stderr"]
+CMD ["/cmd"]
