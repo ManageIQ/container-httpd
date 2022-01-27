@@ -20,6 +20,7 @@ RUN dnf -y --disableplugin=subscription-manager --setopt=tsflags=nodocs install 
       http://mirror.centos.org/centos/8-stream/BaseOS/${ARCH}/os/Packages/centos-stream-repos-8-2.el8.noarch.rpm \
       http://mirror.centos.org/centos/8-stream/BaseOS/${ARCH}/os/Packages/centos-gpg-keys-8-2.el8.noarch.rpm && \
     dnf -y --disableplugin=subscription-manager module enable mod_auth_openidc && \
+    dnf config-manager --setopt=appstream*.exclude=*httpd* --save && \
     dnf -y --disableplugin=subscription-manager --setopt=tsflags=nodocs install \
       httpd \
       mod_auth_openidc \
