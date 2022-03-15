@@ -16,14 +16,18 @@ LABEL name="Httpd" \
       vendor="ManageIQ" \
       description="Apache HTTP Server"
 
-RUN dnf -y --disableplugin=subscription-manager --setopt=tsflags=nodocs install \
+RUN if [ $(uname -m) != "s390x" ] ; then dnf -y --disableplugin=subscription-manager --setopt=tsflags=nodocs install \
       http://mirror.centos.org/centos/8-stream/BaseOS/${ARCH}/os/Packages/centos-stream-repos-8-2.el8.noarch.rpm \
       http://mirror.centos.org/centos/8-stream/BaseOS/${ARCH}/os/Packages/centos-gpg-keys-8-2.el8.noarch.rpm && \
     dnf -y --disableplugin=subscription-manager module enable mod_auth_openidc && \
     dnf config-manager --setopt=appstream*.exclude=*httpd* --save && \
+    dnf -y --disableplugin=subscription-manager install mod_auth_openidc; \
+     else \  
+    dnf -y install /opt/app-root/src/bin-rpm-dir/cjose-0.6.1-2.el8.s390x.rpm /opt/app-root/src/bin-rpm-dir/cjose-devel-0.6.1-2.el8.s390x.rpm /opt/app-root/src/bin-rpm-dir/mod_auth_openidc-2.3.7-11.el8.s390x.rpm && \
+    rm -rf /opt/app-root/src/bin-rpm-dir ; \
+    fi && \ 
     dnf -y --disableplugin=subscription-manager --setopt=tsflags=nodocs install \
       httpd \
-      mod_auth_openidc \
       mod_ssl \
       procps-ng && \
     dnf clean all && \
