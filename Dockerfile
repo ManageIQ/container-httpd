@@ -25,9 +25,9 @@ RUN if [ $(uname -m) != "s390x" ] ; then \
       dnf -y --disableplugin=subscription-manager install mod_auth_openidc; \
     else \
       dnf -y install \
-        /opt/app-root/src/bin-rpm-dir/cjose-*.s390x.rpm \
-        /opt/app-root/src/bin-rpm-dir/cjose-devel-*.s390x.rpm \
-        /opt/app-root/src/bin-rpm-dir/mod_auth_openidc-*.s390x.rpm && \
+        /opt/app-root/src/bin-rpm-dir/cjose-0.6*.s390x.rpm \
+        /opt/app-root/src/bin-rpm-dir/cjose-devel-0.6*.s390x.rpm \
+        /opt/app-root/src/bin-rpm-dir/mod_auth_openidc-2.3*.s390x.rpm && \
       rm -rf /opt/app-root/src/bin-rpm-dir; \
     fi && \
     dnf -y --disableplugin=subscription-manager --setopt=tsflags=nodocs install \
