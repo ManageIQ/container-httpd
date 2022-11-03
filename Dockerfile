@@ -9,14 +9,13 @@ RUN cd /tmp && \
 
 FROM registry.access.redhat.com/ubi8/ubi
 
-ARG ARCH=x86_64
-
 LABEL name="Httpd" \
       summary="Httpd Image" \
       vendor="ManageIQ" \
       description="Apache HTTP Server"
 
-RUN dnf -y --disableplugin=subscription-manager --setopt=tsflags=nodocs install \
+RUN ARCH=$(uname -m) && \
+    dnf -y --disableplugin=subscription-manager --setopt=tsflags=nodocs install \
       httpd \
       mod_ssl \
       procps-ng && \
