@@ -7,7 +7,7 @@ RUN cd /tmp && \
     if [[ "$(cat .git/HEAD)" == "ref:"* ]]; then sha=$(cat .git/$sha); fi && \
     echo "$(date +"%Y%m%d%H%M%S")-$sha" > /tmp/BUILD
 
-FROM registry.access.redhat.com/ubi8/ubi:8.8-1032
+FROM registry.access.redhat.com/ubi8/ubi
 
 LABEL name="Httpd" \
       summary="Httpd Image" \
