@@ -7,7 +7,7 @@ RUN cd /tmp && \
     if [[ "$(cat .git/HEAD)" == "ref:"* ]]; then sha=$(cat .git/$sha); fi && \
     echo "$(date +"%Y%m%d%H%M%S")-$sha" > /tmp/BUILD
 
-FROM registry.access.redhat.com/ubi8/ubi
+FROM registry.access.redhat.com/ubi8/ubi-minimal:latest
 
 LABEL name="Httpd" \
       summary="Httpd Image" \
@@ -15,24 +15,25 @@ LABEL name="Httpd" \
       description="Apache HTTP Server"
 
 RUN ARCH=$(uname -m) && \
-    dnf -y --disableplugin=subscription-manager --setopt=tsflags=nodocs install \
+    microdnf -y --disableplugin=subscription-manager --setopt=tsflags=nodocs install \
       httpd \
       mod_ssl \
       procps-ng && \
     if [ $(uname -m) != "s390x" ] ; then \
-      dnf -y --disableplugin=subscription-manager --setopt=tsflags=nodocs install \
-        http://mirror.centos.org/centos/8-stream/BaseOS/${ARCH}/os/Packages/centos-stream-repos-8-2.el8.noarch.rpm \
-        http://mirror.centos.org/centos/8-stream/BaseOS/${ARCH}/os/Packages/centos-gpg-keys-8-2.el8.noarch.rpm && \
-      dnf -y --disableplugin=subscription-manager module enable mod_auth_openidc && \
-      dnf -y --disableplugin=subscription-manager install mod_auth_openidc; \
+      curl -o /tmp/centos-gpg-keys-8-6.el8.noarch.rpm http://mirror.centos.org/centos/8-stream/BaseOS/${ARCH}/os/Packages/centos-gpg-keys-8-6.el8.noarch.rpm && \
+      curl -o /tmp/centos-stream-repos-8-6.el8.noarch.rpm http://mirror.centos.org/centos/8-stream/BaseOS/${ARCH}/os/Packages/centos-stream-repos-8-6.el8.noarch.rpm && \
+      rpm -i /tmp/centos-*.rpm && \
+      rm -f /tmp/centos-*.rpm && \
+      microdnf -y --disableplugin=subscription-manager module enable mod_auth_openidc && \
+      microdnf -y --disableplugin=subscription-manager install mod_auth_openidc; \
     else \
-      dnf -y install \
+      microdnf -y install \
         /opt/app-root/src/bin-rpm-dir/cjose-0.6*.s390x.rpm \
         /opt/app-root/src/bin-rpm-dir/cjose-devel-0.6*.s390x.rpm \
         /opt/app-root/src/bin-rpm-dir/mod_auth_openidc-2.3*.s390x.rpm && \
       rm -rf /opt/app-root/src/bin-rpm-dir; \
     fi && \
-    dnf clean all && \
+    microdnf clean all && \
     rm -rf /var/cache/dnf && \
     chmod -R g+w /etc/pki/ca-trust && \
     chmod -R g+w /usr/share/pki/ca-trust-legacy
