@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi8/ubi-minimal:latest AS manifest
+FROM registry.access.redhat.com/ubi9/ubi-minimal:latest AS manifest
 
 COPY .git /tmp/.git
 
@@ -7,7 +7,7 @@ RUN cd /tmp && \
     if [[ "$(cat .git/HEAD)" == "ref:"* ]]; then sha=$(cat .git/$sha); fi && \
     echo "$(date +"%Y%m%d%H%M%S")-$sha" > /tmp/BUILD
 
-FROM registry.access.redhat.com/ubi8/ubi
+FROM registry.access.redhat.com/ubi9/ubi
 
 LABEL name="Httpd" \
       summary="Httpd Image" \
@@ -18,20 +18,8 @@ RUN ARCH=$(uname -m) && \
     dnf -y --disableplugin=subscription-manager --setopt=tsflags=nodocs install \
       httpd \
       mod_ssl \
-      procps-ng && \
-    if [ $(uname -m) != "s390x" ] ; then \
-      dnf -y --disableplugin=subscription-manager --setopt=tsflags=nodocs install \
-        http://mirror.centos.org/centos/8-stream/BaseOS/${ARCH}/os/Packages/centos-stream-repos-8-2.el8.noarch.rpm \
-        http://mirror.centos.org/centos/8-stream/BaseOS/${ARCH}/os/Packages/centos-gpg-keys-8-2.el8.noarch.rpm && \
-      dnf -y --disableplugin=subscription-manager module enable mod_auth_openidc && \
-      dnf -y --disableplugin=subscription-manager install mod_auth_openidc; \
-    else \
-      dnf -y install \
-        /opt/app-root/src/bin-rpm-dir/cjose-0.6*.s390x.rpm \
-        /opt/app-root/src/bin-rpm-dir/cjose-devel-0.6*.s390x.rpm \
-        /opt/app-root/src/bin-rpm-dir/mod_auth_openidc-2.3*.s390x.rpm && \
-      rm -rf /opt/app-root/src/bin-rpm-dir; \
-    fi && \
+      procps-ng \
+      mod_auth_openidc && \
     dnf clean all && \
     rm -rf /var/cache/dnf && \
     chmod -R g+w /etc/pki/ca-trust && \
