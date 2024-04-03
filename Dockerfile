@@ -15,6 +15,7 @@ LABEL name="Httpd" \
       description="Apache HTTP Server"
 
 RUN ARCH=$(uname -m) && \
+    dnf -y --disableplugin=subscription-manager --setopt=tsflags=nodocs update && \
     dnf -y --disableplugin=subscription-manager --setopt=tsflags=nodocs install \
       httpd \
       mod_ssl \
