@@ -21,8 +21,8 @@ RUN ARCH=$(uname -m) && \
       procps-ng && \
     if [ $(uname -m) != "s390x" ] ; then \
       dnf -y --disableplugin=subscription-manager --setopt=tsflags=nodocs install \
-        http://mirror.centos.org/centos/8-stream/BaseOS/${ARCH}/os/Packages/centos-stream-repos-8-2.el8.noarch.rpm \
-        http://mirror.centos.org/centos/8-stream/BaseOS/${ARCH}/os/Packages/centos-gpg-keys-8-2.el8.noarch.rpm && \
+        https://rpm.manageiq.org/builds/centos/centos-stream-repos-8-6.1.el8.noarch.rpm \
+        https://rpm.manageiq.org/builds/centos/centos-gpg-keys-8-6.1.el8.noarch.rpm && \
       dnf -y --disableplugin=subscription-manager module enable mod_auth_openidc && \
       dnf -y --disableplugin=subscription-manager install mod_auth_openidc; \
     else \
