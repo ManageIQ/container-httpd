@@ -1,3 +1,9 @@
 #!/bin/bash
-update-ca-trust
+
+# Extract to a tmpdir to avoid: p11-kit: couldn't make directory writable: /etc/pki/ca-trust/extracted/pem/directory-hash: Unknown error 1
+mkdir /tmp/extracted
+update-ca-trust extract -o /tmp/extracted/
+rm -rf /etc/pki/ca-trust/extracted/*
+mv /tmp/extracted/* /etc/pki/ca-trust/extracted/
+
 exec /usr/sbin/httpd -D FOREGROUND -E /dev/stderr
