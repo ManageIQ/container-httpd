@@ -37,6 +37,10 @@ RUN rm -f /etc/httpd/conf.d/* && \
     sed -i 's+ErrorLog "logs/error_log"+ErrorLog "/dev/stderr"+g' /etc/httpd/conf/httpd.conf && \
     sed -i 's+CustomLog "logs/access_log" combined+CustomLog "/dev/stdout" combined+g' /etc/httpd/conf/httpd.conf
 
+# Health monitoring for liveness and readiness
+RUN mkdir /var/www/health && \
+    echo "ok" > /var/www/health/healthz
+
 COPY container-assets/cmd /cmd
 
 RUN mkdir -p /opt/manageiq/manifest
