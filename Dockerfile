@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi9/ubi-minimal:latest AS manifest
+FROM registry.access.redhat.com/ubi10/ubi-minimal:latest AS manifest
 
 COPY .git /tmp/.git
 
@@ -7,7 +7,7 @@ RUN cd /tmp && \
     if [[ "$(cat .git/HEAD)" == "ref:"* ]]; then sha=$(cat .git/$sha); fi && \
     echo "$(date +"%Y%m%d%H%M%S")-$sha" > /tmp/BUILD
 
-FROM registry.access.redhat.com/ubi9/ubi
+FROM registry.access.redhat.com/ubi10/ubi
 
 LABEL name="Httpd" \
       summary="Httpd Image" \
