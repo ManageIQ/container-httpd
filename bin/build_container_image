@@ -11,12 +11,11 @@ docker build . -t localhost/build:latest
 VERSION=$(docker run --rm --entrypoint bash localhost/build:latest -c "rpm -q --queryformat '%{VERSION}\n' httpd")
 IFS=. read major minor _patch <<< ${VERSION}
 
-RELEASEVER=$(docker run --rm --entrypoint bash localhost/build:latest -c "rpm -q --queryformat '%{RELEASE}\n' httpd")
-IFS=. read _package_release os_release <<< ${RELEASEVER}
+os_major=$(docker run --rm --entrypoint bash localhost/build:latest -c "/usr/libexec/platform-python -c 'import dnf; print(dnf.dnf.Base().conf.substitutions[\"releasever_major\"])'")
 
 set -v
-docker tag localhost/build:latest $IMAGE_NAME:$major-$os_release
-docker tag localhost/build:latest $IMAGE_NAME:$major.$minor-$os_release
+docker tag localhost/build:latest $IMAGE_NAME:$major-el$os_major
+docker tag localhost/build:latest $IMAGE_NAME:$major.$minor-el$os_major
 set +v
 
 docker images
@@ -25,7 +24,7 @@ docker images
 
 echo "$REGISTRY_PASSWORD" | docker login $REGISTRY -u $REGISTRY_USERNAME --password-stdin
 
-docker push $IMAGE_NAME:$major-$os_release
-docker push $IMAGE_NAME:$major.$minor-$os_release
+docker push $IMAGE_NAME:$major-el$os_major
+docker push $IMAGE_NAME:$major.$minor-el$os_major
 
 set +e
