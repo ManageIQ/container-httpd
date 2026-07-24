@@ -24,12 +24,12 @@ RUN ARCH=$(uname -m) && \
       mod_auth_openidc && \
     dnf clean all && \
     rm -rf /var/cache/dnf && \
-    chmod -R g+w /etc/pki/ca-trust && \
-    chmod -R g+w /usr/share/pki/ca-trust-legacy
+    chmod -R a+rw /etc/pki/ca-trust && \
+    chmod -R a+rw /usr/share/pki/ca-trust-legacy
 
 # Fix permissions so that httpd can run in the restricted scc
-RUN chgrp root /var/run/httpd && chmod g+rwx /var/run/httpd  && \
-    chgrp root /var/log/httpd && chmod g+rwx /var/log/httpd
+RUN chmod 777 /var/run/httpd && \
+    chmod 777 /var/log/httpd
 
 # Remove any existing configs in conf.d and don't try to bind to port 80
 RUN rm -f /etc/httpd/conf.d/* && \
@@ -47,5 +47,8 @@ RUN mkdir -p /opt/manageiq/manifest
 COPY --from=manifest /tmp/BUILD /opt/manageiq/manifest
 
 EXPOSE 8080
+
+# User: apache
+USER 48
 
 CMD ["/cmd"]
